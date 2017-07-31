@@ -37,7 +37,7 @@ public class VaadinUI extends UI {
 
     private void addActionButtons() {
         Button createButton = new Button("Add entity",clickEvent -> {
-            form.SaveEntity();
+            form.addEntity();
             UI.getCurrent().addWindow(form);
         });
         createButton.setSizeFull();
@@ -47,7 +47,7 @@ public class VaadinUI extends UI {
         });
 
         Button editButton = new Button("Edit entity",clickEvent -> {
-            form.UpdateEntity(selectedEntity);
+            form.editEntity(selectedEntity);
             UI.getCurrent().addWindow(form);
         });
         ButtonsLayout.addComponentsAndExpand(editButton,deleteButton);
