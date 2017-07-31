@@ -15,6 +15,8 @@ public class VaadinUI extends UI {
 
     @Autowired
     private TestRepository repository;
+    @Autowired
+    private TestEntityForm form;
 
     private VerticalLayout layout;
     private Grid<TestEntity> grid = new Grid<>(TestEntity.class);
@@ -27,11 +29,15 @@ public class VaadinUI extends UI {
         addHeader();
         addForm();
         addActionButtons();
+        form.addCloseListener(closeEvent -> {
+            updateList();
+            UI.getCurrent().removeWindow(form);
+        });
     }
 
     private void addActionButtons() {
         Button createButton = new Button("Add entity",clickEvent -> {
-            TestEntityForm form = new TestEntityForm();
+            form.SaveEntity();
             UI.getCurrent().addWindow(form);
         });
         createButton.setSizeFull();
@@ -41,7 +47,7 @@ public class VaadinUI extends UI {
         });
 
         Button editButton = new Button("Edit entity",clickEvent -> {
-            TestEntityForm form = new TestEntityForm(selectedEntity);
+            form.UpdateEntity(selectedEntity);
             UI.getCurrent().addWindow(form);
         });
         ButtonsLayout.addComponentsAndExpand(editButton,deleteButton);
