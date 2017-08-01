@@ -9,20 +9,30 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/*
+* Класс отвечает за отображение и функционирование главной страницы приложения
+*/
 @SpringUI
 @Theme("valo")
 public class VaadinUI extends UI {
 
+    /*
+    * Передача экземпляра класса TestRepository */
     @Autowired
     private TestRepository repository;
+
+    /*
+    * Передача экземпляра класса TestEntityForm */
     @Autowired
     private TestEntityForm form;
 
     private VerticalLayout layout;
     private Grid<TestEntity> grid = new Grid<>(TestEntity.class);
-    private HorizontalLayout ButtonsLayout = new HorizontalLayout();
+    private HorizontalLayout buttonsLayout = new HorizontalLayout();
     private TestEntity selectedEntity = new TestEntity();
 
+    /*
+    * Инициализация главной страницы приложения*/
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         setupLayout();
@@ -35,6 +45,8 @@ public class VaadinUI extends UI {
         });
     }
 
+    /*
+    * Добавление на форму функциональных кнопок*/
     private void addActionButtons() {
         Button createButton = new Button("Add entity",clickEvent -> {
             form.addEntity();
@@ -50,23 +62,32 @@ public class VaadinUI extends UI {
             form.editEntity(selectedEntity);
             UI.getCurrent().addWindow(form);
         });
-        ButtonsLayout.addComponentsAndExpand(editButton,deleteButton);
-        layout.addComponents(createButton,ButtonsLayout);
-        ButtonsLayout.setEnabled(false);
+
+        buttonsLayout.addComponentsAndExpand(editButton,deleteButton);
+        layout.addComponents(createButton, buttonsLayout);
+        buttonsLayout.setEnabled(false);
     }
 
+    /*
+    * Добавление основного слоя на форме*/
     private void setupLayout() {
         layout = new VerticalLayout();
+
         layout.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         setContent(layout);
     }
 
+    /*
+    * Добавление заголовка*/
     private void addHeader() {
         Label header = new Label("Test Project Vaadin");
+
         header.addStyleName(ValoTheme.LABEL_H1);
         layout.addComponent(header);
     }
 
+    /*
+    * Добавление основной части формы с элементом grid*/
     private void addForm() {
         HorizontalLayout formLayout = new HorizontalLayout();
         formLayout.setWidth("80%");
@@ -84,18 +105,22 @@ public class VaadinUI extends UI {
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() == null) {
-                ButtonsLayout.setEnabled(false);
+                buttonsLayout.setEnabled(false);
             } else {
-                ButtonsLayout.setEnabled(true);
+                buttonsLayout.setEnabled(true);
                 selectedEntity=event.getValue();
             }
         });
     }
 
+    /*
+    * Обновление списка у элемента grid*/
     private void updateList() {
         grid.setItems(repository.findAll());
     }
 
+    /*
+    * Удаление сущности*/
     private void deleteEntity(TestEntity entity){
         repository.delete(entity);
         updateList();

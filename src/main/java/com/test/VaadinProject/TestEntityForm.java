@@ -11,25 +11,43 @@ import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Objects;
 
+
+/*
+* Класс отвечает за отображение и функционирование модального окна
+* */
 @UIScope
 @SpringComponent
 public class TestEntityForm extends Window {
 
+    /*
+    * Текстовое поле на форме для ввода имени сущности*/
     private TextField nameField = new TextField("Enter the name");
+
+    /*
+    * Переменная для определения типа выполняемой операции(false-добавление, true-изменение)*/
     private boolean operationType;
+
+    /*
+    * Объявление экземпляра класса TestEntity*/
     private TestEntity entity;
 
+    /*
+    * Передача экземпляра класса TestRepository*/
     @Autowired
     private TestRepository repository;
 
+    /*
+    * Инициализация элементов на форме*/
     @PostConstruct
     private void init(){
         center();
         setClosable(false);
         HorizontalLayout buttons = new HorizontalLayout();
         VerticalLayout form = new VerticalLayout();
-        Button closeButton = new Button("Cancel",clickEvent -> close());
-        Button saveButton = new Button("Save",clickEvent -> {
+        Button closeButton = new Button("Cancel",
+                clickEvent -> close());
+        Button saveButton = new Button("Save",
+                clickEvent -> {
             if (!Objects.equals(nameField.getValue(), "")) {
                 saveEntity(nameField.getValue());
             }
@@ -39,6 +57,8 @@ public class TestEntityForm extends Window {
         setContent(form);
     }
 
+    /*
+    * Метод для изменения или сохранения сущностей*/
     private void saveEntity(String name){
         if(operationType){
             entity.setName(name);
@@ -53,12 +73,16 @@ public class TestEntityForm extends Window {
         close();
     }
 
+    /*
+    * Вызывается при добавлении сущности*/
     public void addEntity() {
         operationType=false;
         entity = new TestEntity();
         nameField.focus();
     }
 
+    /*
+    * Вызывается при редактировании сущности*/
     public void editEntity(TestEntity selectedEntity) {
         operationType=true;
         entity=selectedEntity;

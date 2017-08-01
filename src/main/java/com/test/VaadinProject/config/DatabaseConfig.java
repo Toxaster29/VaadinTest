@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/*
+* Класс для настройки параметров используемой базы данных
+* */
 @Configuration
 @EnableJpaRepositories("com.test.VaadinProject.repository")
 @EnableTransactionManagement
@@ -26,9 +29,13 @@ import java.util.Properties;
 @ComponentScan("com.test.VaadinProject")
 public class DatabaseConfig {
 
+    /*
+    * Переменная для получения свойст из ресурсов*/
     @Resource
     private Environment env;
 
+    /*
+    * Инициализация менеджера сущностей*/
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -40,6 +47,8 @@ public class DatabaseConfig {
         return em;
     }
 
+    /*
+    * Настройка параметров источника данных*/
     @Bean
     public DataSource dataSource() {
         BasicDataSource ds = new BasicDataSource();
@@ -51,6 +60,8 @@ public class DatabaseConfig {
         return ds;
     }
 
+    /*
+    * Инициализация менеджера транзакций*/
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();
@@ -59,10 +70,13 @@ public class DatabaseConfig {
         return manager;
     }
 
+    /*
+    * Получения свойст из файла*/
     public Properties getHibernateProperties() {
         try {
             Properties properties = new Properties();
-            InputStream is = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
+            InputStream is = getClass().getClassLoader()
+                    .getResourceAsStream("hibernate.properties");
             properties.load(is);
 
             return properties;
